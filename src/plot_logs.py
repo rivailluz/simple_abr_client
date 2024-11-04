@@ -2,8 +2,8 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-RESULTS_DIR = "./results"
-GRAPHS_DIR = "./graphs"
+RESULTS_DIR = "/app/results"
+GRAPHS_DIR = "/app/graphs"
 
 if not os.path.exists(GRAPHS_DIR):
     os.makedirs(GRAPHS_DIR)

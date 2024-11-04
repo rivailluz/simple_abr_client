@@ -24,9 +24,9 @@ SMOOTH_PENALTY = 1
 DEFAULT_QUALITY = 1  # default video quality without agent
 RANDOM_SEED = 42
 RAND_RANGE = 1000
-TEST_LOG_FOLDER = "./results"
+TEST_LOG_FOLDER = "/app/results"
 LOG_FILE = "/log_"
-TEST_TRACES = "./traces/"
+TEST_TRACES = "/app/traces/"
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 
 
