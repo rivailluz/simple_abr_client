@@ -4,6 +4,8 @@ Este projeto implementa um player de streaming de vídeo adaptativo que utiliza 
 
 ## Estrutura do Projeto
 
+![Overview do Projeto](/fig/overview.png)
+
 - **bb.py**: Implementa o algoritmo Buffer-based (BB), que seleciona a taxa de bits do próximo chunk de vídeo com base no tamanho atual do buffer.
 - **fixed_env.py**: Define o ambiente de simulação do streaming de vídeo. Este módulo simula o ambiente de rede e entrega chunks de vídeo de acordo com a largura de banda disponível e outras restrições.
 - **load_trace.py**: Carrega os traces de rede, que são usados para simular diferentes condições de largura de banda na rede.
