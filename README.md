@@ -62,7 +62,17 @@ python plot_logs.py
 
 Este script lerá cada arquivo de log na pasta results/, gerará gráficos de bitrate e de tamanho do buffer ao longo do tempo e os salvará na pasta graphs/.
 
-Exemplo de Log de Saída
+
+### Execução completa do docker
+
+Executando com o docker, não é necessário executar nenhum outro comando. 
+A instalação das dependências, execução do player e a geração dos gráficos será feita de forma sequencial.
+
+```bash
+docker-compose up 
+```
+
+### Exemplo de Log de Saída
 Um exemplo de log no arquivo results/log_[nome_do_trace].txt:
 
 ```csv
