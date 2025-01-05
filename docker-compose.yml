@@ -1,13 +1,13 @@
-version: '3.8'
+version: "3.8"
 
 services:
   player:
     build: .
     container_name: player
     volumes:
-      - ./results:/app/results  
-      - ./traces:/app/traces   
-      - ./envivio:/app/envivio  
+      - ./results:/app/results
+      - ./traces:/app/traces
+      - ./envivio:/app/envivio
     environment:
       - PYTHONUNBUFFERED=1
     command: python ./src/player.py
@@ -18,8 +18,8 @@ services:
     depends_on:
       - player
     volumes:
-      - ./results:/app/results  
-      - ./graphs:/app/graphs    
+      - ./results:/app/results
+      - ./graphs:/app/graphs
     environment:
       - PYTHONUNBUFFERED=1
-    command: python ./src/plot_logs.py
+    command: python ./src/compute_metrics.py

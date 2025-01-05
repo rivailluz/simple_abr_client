@@ -2,66 +2,94 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-RESULTS_DIR = "/app/results"
-GRAPHS_DIR = "/app/graphs"
+BB_RESULTS_DIR = "/app/results/results_bb"
+STALLION_RESULTS_DIR = "/app/results/results_stallion"
 
-if not os.path.exists(GRAPHS_DIR):
-    os.makedirs(GRAPHS_DIR)
+BB_GRAPHS_DIR = "/app/graphs/graphs_bb"
+STALLION_GRAPHS_DIR = "/app/graphs/graphs_stallion"
 
-for log_file in os.listdir(RESULTS_DIR):
-    log_path = os.path.join(RESULTS_DIR, log_file)
+COMPARATIVE_GRAPHS_DIR = "/app/graphs/graphs_comparative"
 
-    try:
-        data = pd.read_csv(
-            log_path,
-            names=[
-                "time_stamp",
-                "bit_rate",
-                "buffer_size",
-                "rebuffer_time",
-                "chunk_size",
-                "download_time",
-                "throughput",
-            ],
-            sep=",",
-            engine="python",
-        )
-    except Exception as e:
-        print(f"Erro ao ler {log_file}: {e}")
-        continue
+# Criar diretório para gráficos comparativos
+if not os.path.exists(COMPARATIVE_GRAPHS_DIR):
+    os.makedirs(COMPARATIVE_GRAPHS_DIR)
 
-    if (
-        "time_stamp" not in data.columns
-        or "bit_rate" not in data.columns
-        or "buffer_size" not in data.columns
-    ):
-        print(f"Arquivo {log_file} está no formato incorreto.")
-        continue
+def load_data(results_dir):
+    data = []
+    for log_file in os.listdir(results_dir):
+        log_path = os.path.join(results_dir, log_file)
 
+        try:
+            df = pd.read_csv(
+                log_path,
+                names=[
+                    "algorithm",
+                    "time_stamp",
+                    "bit_rate",
+                    "buffer_size",
+                    "rebuffer_time",
+                    "chunk_size",
+                    "download_time",
+                    "throughput",
+                ],
+                sep=",",
+                engine="python",
+            )
+            data.append(df)
+        except Exception as e:
+            print(f"Erro ao ler {log_file}: {e}")
+            continue
+
+    return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
+
+def generate_comparative_graphs(bb_data, stallion_data):
+    # Bitrate Comparison
     plt.figure()
-    plt.plot(data["time_stamp"], data["bit_rate"], label="Bitrate (Kbps)")
+    plt.plot(bb_data["time_stamp"], bb_data["bit_rate"], label="BB Bitrate (Kbps)")
+    plt.plot(stallion_data["time_stamp"], stallion_data["bit_rate"], label="Stallion Bitrate (Kbps)", linestyle="--")
     plt.xlabel("Time (s)")
     plt.ylabel("Bitrate (Kbps)")
-    plt.title(f"Bitrate over Time - {log_file}")
+    plt.title("Comparação de Bitrate: BB vs Stallion")
     plt.legend()
-    bitrate_graph_path = os.path.join(GRAPHS_DIR, f"{log_file}_bitrate.png")
-    plt.savefig(bitrate_graph_path)
+    plt.savefig(os.path.join(COMPARATIVE_GRAPHS_DIR, "comparative_bitrate.png"))
     plt.close()
 
+    # Buffer Size Comparison
     plt.figure()
-    plt.plot(
-        data["time_stamp"],
-        data["buffer_size"],
-        label="Buffer Size (s)",
-        color="orange",
-    )
+    plt.plot(bb_data["time_stamp"], bb_data["buffer_size"], label="BB Buffer Size (s)")
+    plt.plot(stallion_data["time_stamp"], stallion_data["buffer_size"], label="Stallion Buffer Size (s)", linestyle="--")
     plt.xlabel("Time (s)")
     plt.ylabel("Buffer Size (s)")
-    plt.title(f"Buffer Size over Time - {log_file}")
+    plt.title("Comparação de Tamanho do Buffer: BB vs Stallion")
     plt.legend()
-    buffer_graph_path = os.path.join(GRAPHS_DIR, f"{log_file}_buffer.png")
-    print(buffer_graph_path)
-    plt.savefig(buffer_graph_path)
+    plt.savefig(os.path.join(COMPARATIVE_GRAPHS_DIR, "comparative_buffer.png"))
     plt.close()
 
-print("Gráficos gerados com sucesso na pasta 'graphs'.")
+    # Rebuffering Comparison
+    plt.figure()
+    plt.plot(bb_data["time_stamp"], bb_data["rebuffer_time"].cumsum(), label="BB Rebuffer Time (s)")
+    plt.plot(stallion_data["time_stamp"], stallion_data["rebuffer_time"].cumsum(), label="Stallion Rebuffer Time (s)", linestyle="--")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Cumulative Rebuffer Time (s)")
+    plt.title("Comparação de Rebuffering: BB vs Stallion")
+    plt.legend()
+    plt.savefig(os.path.join(COMPARATIVE_GRAPHS_DIR, "comparative_rebuffering.png"))
+    plt.close()
+
+def main():
+    print("Carregando dados do Buffer-Based Algorithm...")
+    bb_data = load_data(BB_RESULTS_DIR)
+
+    print("Carregando dados do Stallion Algorithm...")
+    stallion_data = load_data(STALLION_RESULTS_DIR)
+
+    if bb_data.empty or stallion_data.empty:
+        print("Dados insuficientes para gerar gráficos comparativos.")
+        return
+
+    print("Gerando gráficos comparativos...")
+    generate_comparative_graphs(bb_data, stallion_data)
+    print("Gráficos comparativos gerados com sucesso em 'graphs_comparative'.")
+
+if __name__ == "__main__":
+    main()
