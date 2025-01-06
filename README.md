@@ -59,23 +59,23 @@ Após executar o player e gerar os logs, você pode executar o script plot_logs.
 Para executar o script de plotagem, use o seguinte comando:
 
 ```bash
-python plot_logs.py
+python compute_metrics
 ```
 
-Este script lerá cada arquivo de log na pasta results/, gerará gráficos de bitrate e de tamanho do buffer ao longo do tempo e os salvará na pasta graphs/.
-
+Esse script irá gerar gráficos comparativos entre o BB e o Stallion.
 
 ### Execução completa do docker
 
-Executando com o docker, não é necessário executar nenhum outro comando. 
+Executando com o docker, não é necessário executar nenhum outro comando.
 A instalação das dependências, execução do player e a geração dos gráficos será feita de forma sequencial.
 
 ```bash
-docker-compose up 
+docker compose up
 ```
 
 ### Exemplo de Log de Saída
-Um exemplo de log no arquivo results/log_[nome_do_trace].txt:
+
+Um exemplo de log no arquivo results/log\_[nome_do_trace].txt:
 
 ```csv
 time_stamp, bit_rate, buffer_size, rebuffer_time, chunk_size, download_time, throughput
